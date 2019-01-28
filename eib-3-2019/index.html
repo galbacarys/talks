@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Title</title>
+		<title>Pipes or Spaghetti?</title>
 		<meta charset="utf-8">
 		<style>
 @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -13,6 +13,14 @@ h1, h2, h3 {
 	font-family: 'Yanone Kaffeesatz';
 	font-weight: normal;
 }
+
+img {
+	max-width:100%;
+}
+
+.remark-slide-content {
+	background-size: contain;
+}
 .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
 		</style>
 	</head>
@@ -20,19 +28,160 @@ h1, h2, h3 {
 		<textarea id="source">
 class: center, middle
 
-# Title
+# Pipes or Spaghetti?
+## A look at modern software through old lenses
+
+???
+
+Hi, my name is Gabe Albacarys. This is my first talk at anything resembling a "public" forum
+so buckle in, because it's going to be a bit of an adventure.
+
+This talk is entitled "Pipes or Spaghetti?", and in the next 30 minutes or so I'm going to
+make fun of all of you, make us all feel bad about our jobs, and do some stupid shit with Bash.
+But before I start any of that, "Pipes or spaghetti", why did I choose that name?
 
 ---
 
-# Agenda
+background-image: url("https://www.google.com/about/datacenters/gallery/images/_3000/IDI_014.jpg")
 
-1. Introduction
-2. Deep-dive
-3. ...
+???
+
+Now we've all seen pictures like this: this is one of Google's datacenters in Georgia. Clearly
+this is an *incredibly* complex system filled with all sorts of crazy things going on at any given
+hour of the day, but it's organized.
 
 ---
 
-# Introduction
+background-image: url("https://www.google.com/about/datacenters/gallery/images/_3000/PRY_20.jpg")
+
+???
+
+Every cable, every wire, every box, every rack is meticulously labeled. The design of each individual
+system is complex in its own right, but together they are far greater than the sum of their parts.
+All the pipes lead somewhere, and even though there are a lot, we know where they go and why they exist.
+
+---
+
+background-image: url("https://i.imgur.com/oZ7aG8x.jpg")
+
+???
+
+Now, this is your system. Notice how it's...slightly...messier than the previous shots, and yet at way
+smaller scale! This is the hell most of us work in day in, day out.
+
+Conveniently, these ethernet cables are also the same color as spaghetti, which makes this terrible
+analogy work. Unlike the pipes in the previous example, I'd be willing to bet that the guy that originally
+built this couldn't point to one of those cables and tell you what it does. Untangling this system and
+determining how it works would be a herculean task.
+
+---
+
+???
+
+The truth us, we really, really suck at building systems as software engineers, and it shows in our
+work. Think back to those datacenters: thousands of racks, each with dozens of machines, all built
+from commodity, standards-driven parts, designed to fit together to within thousandths of an inch, are
+assembled in an organized, predetermined fashion to build an effective means of housing, running, cooling,
+and storing all our shitty work.
+
+(This is where I'm going to start insulting you all)
+
+It doesn't matter how big or small your company is, it doesn't matter how smart you or your staff are...
+
+---
+class: middle, center
+
+# YOUR SOFTWARE SUCKS.
+
+???
+
+Your software sucks.
+
+This is a known reality, and is probably the least controversial statement in this entire talk.
+
+It wasn't always this way though, and it doesn't have to be this way. I want to take a trip with y'all down
+the cobblestone-paved pathways of computing history and show you some good software.
+
+---
+
+![](http://doc.cat-v.org/unix/pipes/pipe.png)
+
+???
+
+This is the document that one of my tech idols, Jessie Frazelle (go check her out, she rocks!) referenced in an
+article a couple of months ago. It was written by Doug McIlroy, an early (and oft-forgotten) pioneer in the
+development of UNIX. He says here,
+
+"We should have some ways of coupling programs like garden hose-screw in another segment when it becomes
+necessary to massage data in another way. This is the way of IO also."
+
+This is an incredible insight, and it manifests itself many years later in the advent of the single most important
+invention in the creation of the modern computer: the pipe.
+
+---
+
+class: middle, center
+
+# `|`
+
+???
+
+Now for those of you that aren't super into shell scripting, let me show you the ABSOLUTE POWER of the pipe.
+
+# cat /var/log/apt/history.log  | grep install | cut -d':' -f 2 | figlet
+
+---
+class: middle
+count: false
+```
+💩-> cat /var/log/apt/history.log
+
+Start-Date: 2018-08-13  05:25:49
+Commandline: apt-get -y install dialog ifupdown 
+isc-dhcp-client locales netbase net-tools openssh-client vim
+Install: libxdmcp6:amd64 (1:1.1.2-3, automatic),
+libdns-export162:amd64 (1:9.10.3.dfsg.P4-12.3+deb9u4, automatic),
+libkrb5-3:amd64 (1.15-1+deb9u1, automatic),
+libgssapi-krb5-2:amd64 (1.15-1+deb9u1, automatic),
+dialog:amd64 (1.3-20160828-2),
+ifupdown:amd64 (0.8.19),
+vim-common:amd64 (2:8.0.0197-4+deb9u1, automatic),
+libelf1:amd64 (0.168-1, automatic),
+libbsd0:amd64 (0.8.3-1, automatic),
+libncurses5:amd64 (6.0+20161126-1+deb9u2, automatic),
+[...]
+```
+
+???
+
+This command shows us a history of every event that's happened with the package manager on my system.
+
+---
+
+class: middle
+count: false
+```
+💩-> cat /var/log/apt/history.log | grep install
+
+Commandline: apt-get -y install dialog ifupdown isc-dhcp-client net-tools openssh-clie
+Commandline: apt-get install iproute2 init -y
+Commandline: apt-get -q -y install apt-transport-https
+Commandline: apt-get -q -y --no-install-recommends install cros-unattended-upgrades
+Commandline: apt-get -q -y install cros-guest-tools
+Commandline: apt install kicad
+Commandline: apt-get install google-cloud-sdk
+Commandline: apt install figlet
+```
+
+???
+
+GREP searches for a word in lines of text, and wouldn't you know it? The output we had before has now been trimmed down
+into a set of lines that contain the word "install"!
+
+So obviously the first question here would be, how does this happen? and the answer is pretty simple.
+
+
+
 		</textarea>
 		<script src="https://remarkjs.com/downloads/remark-latest.min.js">
 		</script>
